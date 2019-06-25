@@ -7,9 +7,9 @@
 @section('content')
   <h1 class="title">Jobs</h1>
 
-  <!--<div class="form-group">
+  <div class="form-group">
     <input type="text" name="search" id="search" class="form-control" placeholder="Search Job" />
-  </div>-->
+  </div>
 
   @foreach ($jobs as $job)
     <div class="box">
@@ -32,30 +32,3 @@
   </form>
 
 @endsection
-<!--
-<script>
-$(document).ready(function(){
-
-    fetch_job_data();
-
-    function fetch_job_data(query = '')
-    {
-    $.ajax({
-        url:"",
-        method:'GET',
-        data:{query:query},
-        dataType:'json',
-        success:function(data)
-        {
-            $('tbody').html(data.jobsData);
-        }
-    })
-    }
-
-    $(document).on('keyup', '#search', function(){
-    var query = $(this).val();
-    fetch_job_data(query);
-    });
-});
-</script>
--->

@@ -14,6 +14,11 @@ class Job extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'description', 'location', 'status',
+        'title', 'description', 'location', 'active',
     ];
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
 }
