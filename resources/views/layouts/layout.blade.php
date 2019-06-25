@@ -22,4 +22,29 @@
     </body>
 </html>
 
+<script>
+$(document).ready(function(){
+
+    fetch_job_data();
+
+    function fetch_job_data(query = '')
+    {
+    $.ajax({
+        url:"{{ route('live_search.action') }}",
+        method:'GET',
+        data:{query:query},
+        dataType:'json',
+        success:function(data)
+        {
+        $('#toSearch').html(data.table_jobs);
+        }
+    })
+    }
+
+    $(document).on('keyup', '#search', function(){
+      var query = $(this).val();
+      fetch_job_data(query);
+    });
+});
+</script>
 

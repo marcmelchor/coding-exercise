@@ -1,15 +1,55 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Http\Request;
 use App\Job;
+use App\Company;
 
 class JobController extends Controller
 {
     public function index()
     {
-        $jobs = Job::orderBy('published_at', 'DESC')->paginate(5);
+        return view('index');
+    }
 
-        return view('index', compact('jobs'));
+    function liveSearch(Request $request)
+    {
+        if($request->ajax())
+        {
+            $output = '';
+            $query = $request->get('query');
+            if($query != '')
+            {
+                $jobs = Job::where('title', 'like', '%'.$query.'%')
+                             ->orderBy('published_at', 'DESC')
+                             ->paginate(5);
+
+            } else {
+                $jobs = Job::orderBy('published_at', 'DESC')->paginate(5);
+            }
+
+            if($jobs->count() > 0)
+            {
+                foreach($jobs as $job)
+                {
+                    $output .= '<div class="box">
+                                  <p><b>Title:</b> '.$job->title.'</p>
+                                  <p><b>Company:</b> '.$job->company->name.'</p>
+                                  <a href="/job/'.$job->id.'">See details</a>
+                                </div>';
+
+                }
+                $output .= '<div style="margin-bottom: 1em">
+                             '.$jobs->links().'
+                            </div>';
+            } else {
+                $output = '<p><b>No Data Found</b></p>';
+            }
+
+            $data = array('table_jobs'=> $output);
+
+            echo json_encode($data);
+        }
     }
 
     public function show(Job $job)
@@ -19,48 +59,24 @@ class JobController extends Controller
 
     public function create()
     {
-        return view('create');
+        $companies = Company::all();
+
+        return view('create', compact('companies'));
     }
-    /*
-    public function liveSearch(Request $request)
+
+    public function store(Request $request)
     {
-        if ($request->ajax())
-        {
-            $output = '';
-            $query = $request->get('query');
+        $attributes = $request->validate([
+            'title'=> ['required', 'max:50'],
+            'description' => ['required'],
+            'company_id'=> ['required'],
+            'location'=> ['required']
+        ]);
 
-            if ($query != '')
-            {
-                $jobs = Job::where('title', 'like', '%'.$query.'%')->orderBy('published_at', 'DESC')->paginate(5)->get();
-            } else {
-                $jobs = Job::orderBy('published_at', 'DESC')->paginate(5)->get();
-            }
+        Job::create($attributes);
 
-            if ($jobs->count() > 0)
-            {
-                foreach($jobs as $job)
-                {
-                    $output .= '<div class="box">
-                                  <p><b>Title:</b> '.$job->title.'</p>
-                                  <p><b>Company:</b> '.$job->company->name.'</p>
-                                  <a href="/job/'.$job->id.'">See details</a>
-                                </div>
-                                <div>
-                                  {{ $jobs->links() }}
-                                </div>';
-
-                }
-            } else {
-                $output = '<div class="box">
-                             <p><b>No Data Found</b></p>';
-            }
-
-            $data = array('jobsData'=> $output);
-
-            echo json_encode($data);
-        }
+        return redirect('/');
     }
-    */
 
     public function apply(Job $job)
     {

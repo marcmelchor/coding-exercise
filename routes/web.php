@@ -12,9 +12,8 @@
 */
 
 Route::get('/', 'JobController@index');
-// Route::get('/', 'JobController@create');
+Route::get('/live_search/action', 'JobController@liveSearch')->name('live_search.action');
+Route::post('/', 'JobController@store');
 Route::get('/job/{job}', 'JobController@show');
 Route::patch('/job/{job}/apply', 'JobController@apply');
-Route::post('/job/create', 'JobController@store');
-
-// Route::get('/jobs/liveSearch', 'JobController@liveSearch')->name('jobs.liveSearch');
+Route::get('/create', 'JobController@create');
