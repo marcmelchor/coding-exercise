@@ -21,11 +21,10 @@ class JobController extends Controller
             if($query != '')
             {
                 $jobs = Job::where('title', 'like', '%'.$query.'%')
-                             ->orderBy('published_at', 'DESC')
-                             ->paginate(5);
+                             ->orderBy('published_at', 'DESC')->get();
 
             } else {
-                $jobs = Job::orderBy('published_at', 'DESC')->paginate(5);
+                $jobs = Job::orderBy('published_at', 'DESC')->get();
             }
 
             if($jobs->count() > 0)
@@ -39,9 +38,9 @@ class JobController extends Controller
                                 </div>';
 
                 }
-                $output .= '<div style="margin-bottom: 1em">
+                /*$output .= '<div style="margin-bottom: 1em">
                              '.$jobs->links().'
-                            </div>';
+                            </div>';*/
             } else {
                 $output = '<p><b>No Data Found</b></p>';
             }
